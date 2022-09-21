@@ -125,7 +125,6 @@ def detect():
                     if save_img :  # Add bbox to image
                         plot_one_box(xyxy, im0, line_thickness=3)
                         
-                    seg = seg.cpu().numpy()
                     np.save(segment_path + 'npy', seg)
 
             # Print time (inference)
