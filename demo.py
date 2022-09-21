@@ -88,7 +88,7 @@ def detect():
         # Apply NMS
         t3 = time_synchronized()
         pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres, classes=opt.classes, agnostic=opt.agnostic_nms)
-        with open(save_dir + 'pred.pickle', mode='wb') as f:
+        with open(str(save_dir / 'pred.pickle'), mode='wb') as f:
             pickle.dump(pred, f)
         t4 = time_synchronized()
 
