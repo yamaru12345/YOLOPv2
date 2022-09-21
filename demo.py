@@ -3,6 +3,8 @@ import time
 from pathlib import Path
 import cv2
 import torch
+import numpy as np
+import pickle
 
 # Conclude setting / general reprocessing / plots / metrices / datasets
 from utils.utils import \
@@ -86,6 +88,8 @@ def detect():
         # Apply NMS
         t3 = time_synchronized()
         pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres, classes=opt.classes, agnostic=opt.agnostic_nms)
+        with open(save_dir + 'pred.pickle', mode='wb') as f:
+            pickle.dump(pred, f)
         t4 = time_synchronized()
 
         da_seg_mask = driving_area_mask(seg)
