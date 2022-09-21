@@ -42,6 +42,7 @@ def detect():
 
     save_dir = Path(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))  # increment run
     (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
+    (save_dir / 'segments' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
 
     inf_time = AverageMeter()
     waste_time = AverageMeter()
@@ -88,8 +89,6 @@ def detect():
         # Apply NMS
         t3 = time_synchronized()
         pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres, classes=opt.classes, agnostic=opt.agnostic_nms)
-        with open(str(save_dir / 'pred.pickle'), mode='wb') as f:
-            pickle.dump(pred, f)
         t4 = time_synchronized()
 
         da_seg_mask = driving_area_mask(seg)
@@ -103,6 +102,7 @@ def detect():
             p = Path(p)  # to Path
             save_path = str(save_dir / p.name)  # img.jpg
             txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # img.txt
+            segment_path = str(save_dir / 'segments' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')
             s += '%gx%g ' % img.shape[2:]  # print string
             gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
             if len(det):
@@ -124,6 +124,9 @@ def detect():
 
                     if save_img :  # Add bbox to image
                         plot_one_box(xyxy, im0, line_thickness=3)
+                        
+                    seg = seg.cpu().numpy()
+                    np.save(segment_path + 'npy', seg)
 
             # Print time (inference)
             print(f'{s}Done. ({t2 - t1:.3f}s)')
