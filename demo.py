@@ -125,7 +125,7 @@ def detect():
                     if save_img :  # Add bbox to image
                         plot_one_box(xyxy, im0, line_thickness=3)
                         
-            np.save(segment_path + 'npy', seg.cpu())
+            np.save(segment_path, seg.cpu())
 
             # Print time (inference)
             print(f'{s}Done. ({t2 - t1:.3f}s)')
